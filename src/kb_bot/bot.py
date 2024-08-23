@@ -48,7 +48,7 @@ class KBBot:
         - You can search the articles by typing 'search_kb'.
         - You will answer only the questions related to the knowledge base articles.
         - If you don't know the answer, politely ask ofr more information if needed, or say you don't know.
-
+        - Always give references to the articles you provide information from.
         """
         
     def search_kb(
@@ -75,16 +75,16 @@ class KBBot:
             }
         ]
         response = self.llm_client.chat(messages=messages, tools=self.tools)
-        if(response.choices[0].message.function_call):
+        if(response.choices[0].message.tool_calls and len(response.choices[0].message.tool_calls) > 0):
             tool_call_responses = []
             for tool_call in response.choices[0].message.tool_calls:
-                kbs = self.search_kb(json.loads(tool_call["function"]["arguments"])["query"])
+                kbs = self.search_kb(json.loads(tool_call.function.arguments)["query"])
                 tool_call_responses.append({
                     "role": "tool",
                     "content": json.dumps({
                         "kbs": kbs
                     }),
-                    "tool_call_id": tool_call["id"]
+                    "tool_call_id": tool_call.id
                 })
-            response = self.llm_client.chat(messages=[*messages, *tool_call_responses], tools=self.tools)
-        return response.choices[0].message
+            response = self.llm_client.chat(messages=[*messages, response.choices[0].message, *tool_call_responses], tools=self.tools)
+        return response.choices[0].message.content

@@ -1,1 +1,1 @@
-from .oai import OpenAIEmbedClient
+from .oai import OpenAIEmbedClient, OpenAIEmbedModel

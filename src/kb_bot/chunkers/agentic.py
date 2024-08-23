@@ -4,24 +4,12 @@ from pydantic import BaseModel
 from ..llm import OpenAI
 from .chunker import BaseChunker
 
-class Sentences(BaseModel):
-    sentences: List[str]
-
-SYSTEM_PROMPT = """You are a Agent who helps spliting the given content into chunks of meanigful sentences. Each chunk will have a maximum 500 characters."""
-
+class Chunks(BaseModel):
+    chunks: List[str]
 class AgenticChunker(BaseChunker):
-    def __init__(self, llm_client=OpenAI(model="gpt-4o-mini")):
-        self.llm_client = llm_client
+    def __init__(self, llm_client):
+        self.llm_client = llm_client or OpenAI(model="gpt-4o-mini")
     
     def get_chunks(self, text):
-        result = self.llm_client.chat_parsed(messages=[
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT,
-            },
-            {
-                "role": "user",
-                "content": text,
-            },
-        ], response_format=Sentences)
-        return result.sentences
+        # To be implemented
+        pass

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kb-bot.core"
-version = "0.1.5"
+version = "0.1.19"
 description = "Library to build a bot from Knowledge Base"
 authors = [
     {name = "Arjun G", email = "arjun@arjun-g.com"}
@@ -18,9 +18,22 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+dependencies = [
+    "beautifulsoup4==4.12.3",
+    "crochet==2.1.1",
+    "llama-index==0.10.68",
+    "numpy==1.26.4",
+    "openai==1.42.0",
+    "peewee==3.16.3",
+    "pillow==10.4.0",
+    "pydantic==2.8.2",
+    "PyMySQL==1.1.0",
+    "pypdf==4.3.1",
+    "python-dotenv==1.0.0",
+    "tidb-vector==0.0.11",
+    "Scrapy==2.11.2"
+]
+
 [project.urls]
 Homepage = "https://github.com/arjun-g/kb-bot.core"
 Issues = "https://github.com/arjun-g/kb-bot.core/issues"
-
-# [tool.setuptools.packages.find]
-# where = ["."]

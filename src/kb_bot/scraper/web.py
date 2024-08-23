@@ -1,6 +1,6 @@
 import crochet
 
-from chunkers import BasicChunker
+from ..chunkers import BasicChunker
 crochet.setup()
 
 import uuid
@@ -51,6 +51,7 @@ class WebSpider(CrawlSpider):
                 content = " ".join([p.get_text() for p in soup.select(selector=self.restrict_css)])
             else:
                 content = soup.get_text()
+            print("Content:", content)
             yield {
                 "content": content,
                 "url": response.url,
@@ -106,13 +107,17 @@ class WebScraper():
         self.eventual.cancel()
     
     def _crawler_result(self, item, response, spider):
+        print("Crawling 3:", item)
         for chunk in self.chunker.get_chunks(item["content"]):
-            self.db_provider.insert({
-                "id": str(uuid.uuid1()),
-                "title": item["title"],
-                "content": chunk,
-                "ref": item["url"],
-                "embedding": self.embedding_client.embed(chunk),
-                "type": "web",
-                "group": self.group
-            })
+            print("Crawling 3:", chunk)
+            try:
+                self.db_provider.insert({
+                    "id": str(uuid.uuid1()),
+                    "title": item["title"],
+                    "content": chunk,
+                    "ref": item["url"],
+                    "embedding": self.embedding_client.embed(chunk),
+                    "type": "web",
+                    "group": self.group
+                })
+            except Exception as e: print(e)

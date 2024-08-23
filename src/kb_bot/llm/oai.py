@@ -8,12 +8,17 @@ class OpenAI:
         self.model = model
 
     def chat(self, messages, tools, response_format=None):
-        return self.client.beta.chat.completions.parse(
+        return self.client.chat.completions.create(
             messages=messages,
             model=self.model,
             response_format=response_format,
             tools=tools
         )
     
-    def chat_parsed(self, messages, response_format=None):
-        return self.chat(messages, response_format).choices[0].message.parsed
+    def chat_parsed(self, messages, tools, response_format=None):
+        return self.client.beta.chat.completions.parse(
+            messages=messages,
+            model=self.model,
+            response_format=response_format,
+            tools=tools
+        ).choices[0].message.parsed

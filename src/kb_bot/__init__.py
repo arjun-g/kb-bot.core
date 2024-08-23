@@ -1,1 +1,1 @@
-from bot import KBBot
+from .bot import KBBot
