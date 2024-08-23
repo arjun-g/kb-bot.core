@@ -1,6 +1,6 @@
 import crochet
 
-from chunking.basic import BasicChunker
+from chunkers import BasicChunker
 crochet.setup()
 
 import uuid
@@ -13,8 +13,10 @@ from scrapy import signals
 from scrapy.crawler import CrawlerRunner
 from scrapy.signalmanager import dispatcher
 
-class ContentSpider(CrawlSpider):
-    name = "quotes"
+from embedding import OpenAIEmbedClient
+
+class WebSpider(CrawlSpider):
+    name = "web-scraper"
     
     crawled_urls = []
     
@@ -33,9 +35,9 @@ class ContentSpider(CrawlSpider):
             Rule(LinkExtractor(
                 restrict_css=restrict_navigation_css,
                 unique=True
-            ), callback='parse_page', follow=True),
+            ), callback='parse_page', follow=follow_links),
         )
-        super(ContentSpider, self).__init__(*args, **kwargs)
+        super(WebSpider, self).__init__(*args, **kwargs)
         self.start_urls = urls
         self.restrict_css = restrict_css
         self.ignore_css = ignore_css
@@ -72,6 +74,7 @@ class WebScraper():
         restrict_css=None,
         ignore_css=None,
         db_provider=None,
+        embedding_client=OpenAIEmbedClient(),
         chunker=BasicChunker()
     ):
         self.crawl_runner = CrawlerRunner()
@@ -82,6 +85,7 @@ class WebScraper():
         self.ignore_css = ignore_css
         self.db_provider = db_provider
         self.chunker = chunker
+        self.embedding_client = embedding_client
         
     @crochet.run_in_reactor
     def crawl(self):
@@ -89,7 +93,7 @@ class WebScraper():
         dispatcher.connect(self._crawler_result, signal=signals.item_scraped)
         try:
             self.eventual = self.crawl_runner.crawl(
-                ContentSpider,
+                WebSpider,
                 urls=self.urls,
                 follow_links=self.follow_links,
                 restrict_navigation_css=self.restrict_navigation_css,
@@ -108,5 +112,5 @@ class WebScraper():
                 "title": item["title"],
                 "content": chunk,
                 "ref": item["url"],
-                "embedding": []
+                "embedding": self.embedding_client.embed(chunk)
             })

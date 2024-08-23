@@ -33,7 +33,6 @@ class TiDBProvider():
         tidb.close()
         
     def insert(self, kb):
-        print("INSERT KB")
         try:
             KB.create(
                 id=kb['id'],

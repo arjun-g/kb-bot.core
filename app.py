@@ -38,10 +38,11 @@ import dotenv
 dotenv.load_dotenv()
 
 import time
-from libs.webscraper import WebScraper
-from libs.db import TiDBProvider
+from scraper.web import WebScraper
+from db.tidb import TiDBProvider
 
 db_provider = TiDBProvider()
+
 db_provider.connect()
 
 scraper = WebScraper(
