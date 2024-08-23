@@ -4,8 +4,6 @@ from chunkers import BasicChunker
 crochet.setup()
 
 import uuid
-from pathlib import Path
-import scrapy
 from scrapy.spiders import Rule, CrawlSpider
 from scrapy.linkextractors import LinkExtractor
 from bs4 import BeautifulSoup
@@ -13,7 +11,7 @@ from scrapy import signals
 from scrapy.crawler import CrawlerRunner
 from scrapy.signalmanager import dispatcher
 
-from embedding import OpenAIEmbedClient
+from ..embedding import OpenAIEmbedClient
 
 class WebSpider(CrawlSpider):
     name = "web-scraper"
@@ -75,7 +73,8 @@ class WebScraper():
         ignore_css=None,
         db_provider=None,
         embedding_client=OpenAIEmbedClient(),
-        chunker=BasicChunker()
+        chunker=BasicChunker(),
+        group=None
     ):
         self.crawl_runner = CrawlerRunner()
         self.urls = urls
@@ -86,6 +85,7 @@ class WebScraper():
         self.db_provider = db_provider
         self.chunker = chunker
         self.embedding_client = embedding_client
+        self.group = group
         
     @crochet.run_in_reactor
     def crawl(self):
@@ -112,5 +112,7 @@ class WebScraper():
                 "title": item["title"],
                 "content": chunk,
                 "ref": item["url"],
-                "embedding": self.embedding_client.embed(chunk)
+                "embedding": self.embedding_client.embed(chunk),
+                "type": "web",
+                "group": self.group
             })

@@ -3,8 +3,8 @@ from llama_index.core.node_parser import (
     SemanticSplitterNodeParser,
 )
 
-from chunkers import BaseChunker
-from embedding import OpenAIEmbedClient
+from .chunker import BaseChunker
+from ..embedding import OpenAIEmbedClient
 
 class SemanticChunker(BaseChunker):
     def __init__(self, buffer_size=1, breakpoint_percentile_threshold=95):

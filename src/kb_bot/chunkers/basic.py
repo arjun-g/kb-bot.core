@@ -1,7 +1,7 @@
 from llama_index.core import Document
 from llama_index.core.node_parser import SentenceSplitter
 
-from chunkers.chunker import BaseChunker
+from .chunker import BaseChunker
 
 class BasicChunker(BaseChunker):
     def __init__(self, chunk_size=500, chunk_overlap=50):

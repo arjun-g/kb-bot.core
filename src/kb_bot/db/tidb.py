@@ -21,7 +21,9 @@ class KB(Model):
     title = TextField()
     content = TextField()
     ref = TextField()
-    embedding = VectorField(768, constraints=[SQL("COMMENT 'hnsw(distance=cosine)'")])
+    type = TextField()
+    group = TextField()
+    embedding = VectorField(1536, constraints=[SQL("COMMENT 'hnsw(distance=cosine)'")])
 
 class TiDBProvider():
     def connect(self):
@@ -39,7 +41,13 @@ class TiDBProvider():
                 title=kb['title'],
                 content=kb['content'],
                 ref=kb['ref'],
-                embedding=kb['embedding']
+                embedding=kb['embedding'],
+                type=kb['type'],
+                group=kb['group']
             )
         except Exception as e: print(e)
         
+    def search(self, vector, group=None, limit = 5):
+        distance = KB.embedding.cosine_distance(vector).alias('distance')
+        results = KB.select(KB.id, KB.title, KB.content, KB.ref, KB.type, distance).where(group == group).order_by(distance).limit(limit)
+        return list(results.dicts())

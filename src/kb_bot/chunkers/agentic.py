@@ -1,8 +1,8 @@
 from typing import List
 from pydantic import BaseModel
 
-from llm import OpenAI
-from chunkers import BaseChunker
+from ..llm import OpenAI
+from .chunker import BaseChunker
 
 class Sentences(BaseModel):
     sentences: List[str]

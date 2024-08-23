@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kb-bot.core"
+version = "0.1.5"
+description = "Library to build a bot from Knowledge Base"
+authors = [
+    {name = "Arjun G", email = "arjun@arjun-g.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/arjun-g/kb-bot.core"
+Issues = "https://github.com/arjun-g/kb-bot.core/issues"
+
+# [tool.setuptools.packages.find]
+# where = ["."]
